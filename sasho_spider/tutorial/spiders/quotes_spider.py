@@ -4,10 +4,10 @@ import scrapy
 class QuoteSpider(scrapy.Spider):
     name = "quotes"
     start_urls = [
-        'http://quotes.toscrape.com/',
-#        'http://quotes.toscrape.com/page/2/'
-        ]
-
+        # 'http://quotes.toscrape.com/',
+       'example.com'
+    ]
+    allowed_domains = ['http://www.example.com']
 
     # def start_requests(self):
     #     urls =
@@ -37,3 +37,12 @@ class QuoteSpider(scrapy.Spider):
     # def parse(self, response):
     #     print '###############################################################'
     #     self.logger.info('Response from %s arrived!', response.url)
+
+    def parse_item(self, response):
+        self.logger.info("Response page %s", response.url)
+        item = scrapy.Item(
+            id=response.xpath('//td[@id="item_id"]/text()').re('ID: (\d+)'),
+            name=response.xpath('//td[@id="item_name"]/text()').extract(),
+            description=response.xpath('//td[@id="item_description/text()"]').extract(),
+        )
+        return item
