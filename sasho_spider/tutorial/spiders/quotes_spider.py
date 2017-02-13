@@ -1,6 +1,7 @@
 import scrapy
 from tutorial.items import *
-from scrapy.loader import ItemLoader
+from scrapy.loader import ItemLoadere
+from tutorial.pipelines import *
 
 
 
