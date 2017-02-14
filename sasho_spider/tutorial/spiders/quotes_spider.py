@@ -4,7 +4,7 @@ from scrapy.loader import ItemLoader
 from tutorial.pipelines import *
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError, TCPTimedOutError
-
+from scrapy.linkextractors import LinkExtractor
 
 class QuoteSpider(scrapy.Spider):
     name = "quotes"
@@ -57,6 +57,7 @@ class QuoteSpider(scrapy.Spider):
         l.add_xpath('price', '//p[@id="price"]')
         l.add_css('stocl', 'p#stock')
         l.add_value('last_updated', 'today')
+        print ("Existing settitngsL %s" % self.settings.attributes.key())
         print l.load_item()
         return l.load_item()
 
