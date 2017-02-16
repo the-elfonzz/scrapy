@@ -1,18 +1,19 @@
 import scrapy
 from tutorial.items import *
 from scrapy.loader import ItemLoader
-from tutorial.pipelines import *
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError, TCPTimedOutError
 from scrapy.linkextractors import LinkExtractor
+import logging
 
 class QuoteSpider(scrapy.Spider):
     name = "quotes"
     start_urls = [
-        # 'http://quotes.toscrape.com/',
-       'http://pressonline.rs/rss-feeds.html'
+       'http://www.unica.ro/de-ziua-indragostitilor-189718',
     ]
-    allowed_domains = ['http://www.example.com']
+
+    def __init__(self, **kwargs):
+        self.start_urls = kwargs
 
     # def start_requests(self):
     #     urls =
@@ -52,13 +53,10 @@ class QuoteSpider(scrapy.Spider):
 
     def parse(self, response):
         l = ItemLoader(item=Product(), response=response)
-        l.add_xpath('name', '//div[@class="product_name"]')
-        l.add_xpath('name', '//div[@class="product_title"]')
-        l.add_xpath('price', '//p[@id="price"]')
-        l.add_css('stocl', 'p#stock')
-        l.add_value('last_updated', 'today')
-        print ("Existing settitngsL %s" % self.settings.attributes.key())
-        print l.load_item()
+        l.add_xpath('name', '//div[@class="single-article-title"]')
+        l.add_xpath('body', '//div[@class="content"]')
+        self.logger.log("THIS IS A LOG")
+        print ("Existing settitngs %s" % self.settings.attributes.key())
         return l.load_item()
 
     def parse_item(self, response):
