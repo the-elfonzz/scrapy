@@ -57,7 +57,7 @@ CONCURRENT_REQUESTS_PER_IP=16
 ITEM_PIPELINES = {
     'tutorial.pipelines.TutorialPipeline': 300,
     'tutorial.pipelines.PricePipeline': 400,
-    'tutorial.pipelines.DuplicatesPipeline': 350,
+    #'tutorial.pipelines.DuplicatesPipeline': 350,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
