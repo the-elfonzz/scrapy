@@ -19,3 +19,5 @@ class BasicSpider(scrapy.Spider):
         	'Place"][1]/text()').extract())
         self.log("image_urls: %s" % response.xpath(
         	'//*[@otemprop="image"][1]/@src').extract())
+
+

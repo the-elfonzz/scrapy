@@ -1,67 +1,38 @@
 import scrapy
 from tutorial.items import *
-# from scrapy.loader import ItemLoader
 from scrapy.spidermiddlewares.httperror import HttpError
-from twisted.internet.error import DNSLookupError, TimeoutError, TCPTimedOutError
+from twisted.internet.error import DNSLookupError, TimeoutError, \
+    TCPTimedOutError
+from scrapy.contrib.loader import XPathItemLoader
+import lxml.html
+import re
 # from scrapy.linkextractors import LinkExtractor
+
 import logging
 
 
 class QuoteSpider(scrapy.Spider):
     name = "quotes"
-    # start_url = [
-    #     'http://life.dir.bg/news.php?id=25301593&nt=5',
-    # ]
 
     def __init__(self, *args, **kwargs):
+        # kwargs = {k.decode('utf-0'): v.decode('utf-0') for k, v in kwargs.items()}
+
         super(QuoteSpider, self).__init__(*args, **kwargs)
         # urls = {k, v.split(";"): for k,v in kwargs}
         self.start_urls = [
             "https://www.slabsaugras.ro/efectele-negative-ale-obezitatii-subestimate/",
         ]
 
-    # def start_requests(self):
-    #     urls =
-    #
-    #     for url in urls:
-    #         yield scrapy.Request(url=url, callback=self.parse)
-
-    # def parse(self, response):
-    #     page = response.url.split("/")[-2]
-    #     filename = 'quotes-%s.html' % page
-    #     with open(filename, 'wb') as f:
-    #         f.write(response.body)
-    #     self.log('Save file %s' % filename)
-
-    # def parse(self, response):
-    #     self.logger.info('Response from %s arrived!', response.url)
-    #     for quote in response.css('div.quote'):
-    #         yield {
-    #             'text': quote.css('span.text::text').extract_first(),
-    #             'author': quote.css('span small::text').extract_first(),
-    #             'tags': quote.css('div.tags a.tag::text').extract_first(),
-    #         }
-    #     next_page = response.xpath("//ul[@class='pager']///@href").extract_first()
-    #     if next_page is not None:
-    #         next_page = response.urljoin(next_page)
-    #         yield scrapy.Request(next_page, callback=self.parse)
-
     def parse(self, response):
-        print self.start_urls
-        prod = Product()
-        prod['name'] = response.xpath("//h1[contains(@class,'post-title')]").extract()
-        prod['price'] = response.xpath("//span[@class='td-estimated-value']").extract()
-        prod['stock'] = response.xpath("//div[@itemprop='articleBody']").extract()
+        prod = TutorialItem()
+        prod['name'] = response.xpath(
+            "//h1[contains(@class,'post-title')]").extract()
+        prod['price'] = response.xpath(
+            "//span[@class='td-estimated-value']").extract()
+        prod['stock'] = response.xpath(
+            "//div[@itemprop='articleBody']").extract()
         self.log(prod)
         yield prod
-
-    # def parse(self, response):
-    #     self.logger.info("THIS IS A LOG")
-    #     l = ItemLoader(item=Product(), response=response)
-    #     l.add_xpath('name', '//div[@class="single-article-title"]')
-    #     l.add_xpath('body', '//div[@class="content"]')
-    #     print ("Existing settitngs %s" % self.settings.attributes.key())
-    #     yield l.load_item()
 
     def parse_item(self, response):
         self.logger.info("Response page %s", response.url)
@@ -72,7 +43,6 @@ class QuoteSpider(scrapy.Spider):
                 '//td[@id="item_description/text()"]').extract(),
         )
         return item
-
 
 
 class ErrbackSpider(scrapy.Spider):
@@ -88,7 +58,7 @@ class ErrbackSpider(scrapy.Spider):
     def start_requests(self):
         for u in self.start_urls:
             yield scrapy.Request(u, callback=self.parse_httpbin,
-                                dont_filter=True)
+                            dont_filter=True)
 
     def parse_httpbin(self, response):
         self.logger.info(
@@ -106,3 +76,13 @@ class ErrbackSpider(scrapy.Spider):
         elif failure.check(TimeoutError, TCPTimeoutError):
             request = failure.request
             self.logger.error('TimeoutError on %s', request.url)
+
+class MySpider(scrapy.Spider):
+    name = 'spider'
+    start_urls = ['http://']
+
+    def parse(self, response):
+        self.log("title: %s" % response.xpath(
+            '//h1[@itemprop="name"]/text()').extract())
+
+    def parse_item(self, response):

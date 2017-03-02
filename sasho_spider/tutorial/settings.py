@@ -1,5 +1,4 @@
-import os
-import sys
+import sys, os
 
 
 BOT_NAME = 'tutorial'
@@ -12,7 +11,7 @@ NEWSPIDER_MODULE = 'tutorial.spiders'
 #USER_AGENT = 'tutorial (+http://www.yourdomain.com)'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS=32
+#CONCURRENT_REQUESTS=16
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
@@ -71,8 +70,5 @@ ITEM_PIPELINES = {
 # Enable showing throttling stats for every response received:
 #AUTOTHROTTLE_DEBUG=False
 
-# DJANGO_PROJECT_PATH = ''
-# DJANGO_SETTINGS_MODULE = ''
-#
-# sys.path.insert(0, DJANGO_PROJECT_PATH)
-# os.environ
+# sys.path.append('APP-path')
+# os.environ['DJANGO_SETTINGS_MODULE'] = 'APP.settings'
